@@ -15,11 +15,9 @@ const app = express(); //Create the express app
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-
+module.exports.pool = pool; //Make the connection pool global
 
 server.listen(PORT, () => {
-    console.log("Server started on localhost:" + PORT)
+    console.log("Server started on localhost:" + PORT);
+
 });
-
-
-module.exports.pool = pool; //Make the connection pool global
