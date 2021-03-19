@@ -9,7 +9,7 @@ To run this project:
 2) npm start
 
 
-##.env
+## .env
 You will need to create a .env file in the root directory of the server in order to access a database!
 
 ```
