@@ -49,7 +49,11 @@ app.use(express.static('public'));
 require('./chat/chatroom')(io);
 
 //**********ROUTES************ */
+
 app.use('/login', require('./routes/login'));
+app.use('/logout', require('./routes/logout'));
+
+app.use('/', require('./routes/index')); //Must remain at the bottom
 
 
 app.use((req, res) => { //If the route cannot be found, display a 404 page
