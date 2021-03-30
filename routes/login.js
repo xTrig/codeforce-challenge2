@@ -23,11 +23,5 @@ router.post('/', passport.authenticate("local", {
     res.redirect('/'); //redirect them to the homepage
 });
 
-router.get('/logout', (req, res) => {
-    req.logout();
-    req.flash("success", "You have been logged out!");
-    setTimeout(() => {
-        res.redirect('/login');
-    }, 100);
-});
+
 module.exports = router;
