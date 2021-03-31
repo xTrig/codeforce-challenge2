@@ -1,7 +1,24 @@
-<div class="container">
-    {{#if user}}
+<div class="container-fluid">
+    {{!-- {{#if user}}
         <h1>Logged in as {{user.firstName}} {{user.lastName}}</h1>
     {{else}}
         <h1>Not logged in</h1>
-    {{/if}}
+    {{/if}} --}}
+
+    <div class="col-sm-4 mx-auto text-center mt-4" id="welcomeHeader">
+        <p class="display-4">U-Chat Course Portal</h4>
+        <h1>Welcome {{user.firstName}} {{user.lastName}}</h1>
+    </div>
+
+    <div class="container border border-secondary mx-auto p-3 mt-4 text-center" id="courseContainer">
+        {{#unless courses}}
+            <h3>No Courses Found</h3>
+        {{/unless}}
+        {{#each courses}}
+            <div class="col-sm-4 border border-primary">
+                <h2>{{this.courseName}}</h2>
+                <h3>{{this.firstName}} {{this.lastName}}</h3>
+            </div>
+        {{/each}}
+    </div>
 </div>
