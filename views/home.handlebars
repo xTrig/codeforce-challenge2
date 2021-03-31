@@ -15,10 +15,11 @@
             <h3>No Courses Found</h3>
         {{/unless}}
         {{#each courses}}
+            <a href="./chat/{{this.id}}">
             <div class="col-sm-4 border border-primary">
                 <h2>{{this.courseName}}</h2>
                 <h3>{{this.firstName}} {{this.lastName}}</h3>
-            </div>
+            </div></a>
         {{/each}}
     </div>
 </div>
