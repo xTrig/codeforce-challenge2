@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const app = require('../app');
-const saltRounds = process.env.SALT_ROUNDS;
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 module.exports.createUser = (pool, firstName, lastName, email, password, callback) => {
     //First we need to hash the password
@@ -22,6 +22,7 @@ module.exports.verifyLogin = (pool, email, password, callback) => {
         if(res.length > 0) { //If we found a user with this email
             let user = res[0];
             bcrypt.compare(password, user.password, (err, validPass) => {
+                if(err) throw err;
                 if(validPass) {
                     callback(user); //Return the user object
                 } else {
@@ -43,5 +44,12 @@ module.exports.getUserById = (pool, id, callback) => {
         } else {
             callback(false);
         }
+    });
+}
+
+module.exports.emailExists = (pool, email, callback) => {
+    let sql = "SELECT id FROM users WHERE email=?";
+    pool.query(sql, [email], (err, res) => {
+        callback(res.length > 0);
     });
 }
