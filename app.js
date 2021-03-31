@@ -23,7 +23,11 @@ const app = express(); //Create the express app
 app.engine('handlebars', handlebars);
 app.set('view engine', 'handlebars');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+    cors: {
+        origin: 'http://localhost:3000'
+    }
+});
 
 app.use(session({
     secret: "DFUFY173",
@@ -46,12 +50,11 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(express.static('public'));
 
-require('./chat/chatroom')(io);
-
 //**********ROUTES************ */
 
 app.use('/login', require('./routes/login'));
 app.use('/logout', require('./routes/logout'));
+app.use('/chat', require('./routes/chatroom'));
 
 app.use('/', require('./routes/index')); //Must remain at the bottom
 
@@ -67,7 +70,9 @@ app.use((err, req, res, next) => {
 
 server.listen(PORT, () => {
     console.log("Server started on localhost:" + PORT);
-
+    require('./chat/chatroom')(io);
+    const courseUtils = require('./utils/CourseUtils');
+    
 });
 
 module.exports.pool = pool; //Make the connection pool global
