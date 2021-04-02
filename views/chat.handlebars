@@ -35,10 +35,11 @@
         });
 
         chatPanel = document.getElementById("chatPanel");
-        socket = io("http://localhost:3000", {
+        socket = io({
             auth: {
                 username: "{{user.firstName}} {{user.lastName}}",
-                roomId: {{courseId}}
+                roomId: {{courseId}},
+                studentId: {{user.id}}
             }
         });
         socket.on("disconnected", (reason) => {
