@@ -42,7 +42,7 @@
                 studentId: {{user.id}}
             }
         });
-        socket.on("disconnected", (reason) => {
+        socket.on("disconnect", (reason) => {
             appendMessage("Disconnected from server");
         });
         socket.on("error", (error) => {
@@ -52,11 +52,22 @@
             console.error(error);
         });
         socket.on("connect", () => {
+            clearMessages();
             appendMessage("Connected to server");
             console.log("Connected to server");
         });
         socket.on("chat message", (message) => {
             appendMessage(message);
+        });
+
+        socket.on("bulk message", (messages) => { //When the server needs to send a bulk amount of messages
+            for(let i = 0; i < messages.length; i++) {
+                let name = messages[i].name;
+                if(messages[i].studentId == {{user.id}}) {
+                    name = "You";
+                }
+                appendMessage(name + ": " + messages[i].message);
+            }
         });
         
     });
@@ -66,6 +77,12 @@
             socket.emit("chat message", messageBox.value);
             appendMessage("You: " + messageBox.value); //Add it to our local chat window
             messageBox.value = "";
+        }
+    }
+
+    function clearMessages() {
+        while(chatWindow.firstChild) {
+            chatWindow.removeChild(chatWindow.lastChild);
         }
     }
 
