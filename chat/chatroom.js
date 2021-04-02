@@ -34,6 +34,12 @@ module.exports = (io) => {
     io.on("connection", (socket) => { //Called when a user connects
         console.log(socket.username + " has connected");
         socket.join(socket.room);
+
+        //Grab previous 50 messages and send them to the user
+        chatUtils.getPreviousMessages(server.pool, socket.room, 50, (messages) => {
+            io.to(socket.id).emit('bulk message', messages);
+        });
+
         io.to(socket.room).emit("user connected", {
             userID: socket.id,
             username: socket.username
