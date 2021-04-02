@@ -1,18 +1,48 @@
+<div class="container mt-4">
+    <h1 class="text-center">Chat page for Course Id {{courseId}}</h1>
+    <div class="row ">
+        <div class="col-sm-10 mx-auto border border-secondary div-overflow" style="height: 80vh; overflow-y: auto;" id="chatPanel">
+            <ul class="list-group list-group-flush" id="chatWindow">
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-sm-10" id="messagePanel">
+            <input type="text" class="form-control" id="messageBox">
+        </div>
+        <div class="col-sm-1">
+            <button class="btn btn-primary" type="button" id="sendMessageBtn">Send</button>
+        </div>
+    </div>
+</div>
 
 
-<h1>Chat page for Course Id {{courseId}}</h1>
 
 
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
 <script>
+    let chatWindow;
+    let chatPanel;
+    let messageBox;
+    let socket;
     window.addEventListener('load', () => {
-        var socket = io("http://localhost:3000", {
+        chatWindow = document.getElementById("chatWindow");
+        messageBox = document.getElementById("messageBox");
+        document.getElementById("sendMessageBtn").addEventListener('click', () => {
+            sendMessage();
+        });
+
+        chatPanel = document.getElementById("chatPanel");
+        socket = io("http://localhost:3000", {
             auth: {
                 username: "{{user.firstName}} {{user.lastName}}",
                 roomId: {{courseId}}
             }
+        });
+        socket.on("disconnected", (reason) => {
+            appendMessage("Disconnected from server");
         });
         socket.on("error", (error) => {
             console.error(error);
@@ -21,9 +51,28 @@
             console.error(error);
         });
         socket.on("connect", () => {
-            socket.emit('chat message', "Hello World from {{user.firstName}}");
+            appendMessage("Connected to server");
             console.log("Connected to server");
+        });
+        socket.on("chat message", (message) => {
+            appendMessage(message);
         });
         
     });
+
+    function sendMessage() {
+        if(messageBox.value) {
+            socket.emit("chat message", messageBox.value);
+            appendMessage("You: " + messageBox.value); //Add it to our local chat window
+            messageBox.value = "";
+        }
+    }
+
+    function appendMessage(message) {
+        let messageLi = document.createElement('li');
+        messageLi.innerText = message;
+        messageLi.classList.add("list-group-item");
+        chatWindow.appendChild(messageLi);
+        chatPanel.scrollTop = chatPanel.scrollHeight;
+    }
 </script>

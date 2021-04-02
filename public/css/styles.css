@@ -2,3 +2,8 @@ col-centered {
     float: none;
     margin: 0 auto;
 }
+
+div-overflow {
+    overflow-y: auto im !important;
+    height: 600px im !important;
+}
