@@ -9,13 +9,13 @@ module.exports = (io) => {
         if(!roomId) {
             return next(new Error("Invalid Room"));
         }
-        socket.username = socket.handshake.auth.username;
-        socket.room = socket.handshake.auth.roomId;
+        socket.username = username;
+        socket.room = roomId;
         next();
     });
 
     io.on("connection", (socket) => { //Called when a user connects
-        console.log("A user has connected");
+        console.log(socket.username + " has connected");
         socket.join(socket.room);
         io.to(socket.room).emit("user connected", {
             userID: socket.id,
@@ -31,7 +31,13 @@ module.exports = (io) => {
         });
 
         socket.on("chat message", (message) => {
-            console.log("Socket.IO: " + message);
+            let date = new Date().toTimeString();
+            
+            let msgToSend = socket.username + ": " + message;
+            console.log("[" + socket.room + "] " + msgToSend);
+            socket.to(socket.room).emit("chat message", msgToSend);
+            
+            
         });
     });
 }
